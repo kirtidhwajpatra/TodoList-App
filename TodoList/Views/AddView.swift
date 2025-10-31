@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct AddView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var listViewModel: ListViewModel
     @State var textFieldText: String = ""
+    
+    @State private var showAlert: Bool = false
     var body: some View {
         ScrollView{
             VStack {
@@ -17,9 +21,7 @@ struct AddView: View {
                     .frame(height: 55)
                     .background(Color(.gray).opacity(0.2))
                     .cornerRadius(10)
-                Button {
-                    
-                } label: {
+                Button(action:saveButtonPressed, label: {
                     Text("Add".uppercased())
                         .foregroundColor(.white)
                         .font(.headline)
@@ -27,19 +29,40 @@ struct AddView: View {
                         .frame(maxWidth: .infinity)
                         .background(Color.accentColor)
                         .cornerRadius(10)
-                }
-
+                })
             }
             .padding()
         }
-        .navigationTitle(Text("Add an item ✏✛"))
+        .navigationTitle(Text("Add an item ✏"))
+        .alert("Enter at least 3 characters", isPresented: $showAlert) {
+            Button("OK", role: .cancel) { }
+        }
         
         
     }
+    
+    func saveButtonPressed() {
+        if textIsAppropriate() {
+            listViewModel.addItem(title: textFieldText)
+            presentationMode.wrappedValue.dismiss()
+        } else {
+            showAlert = true
+        }
+    }
+    
+    func textIsAppropriate() -> Bool {
+        if textFieldText.count < 3 {
+            return false
+        } else {
+            return true
+        }
+    }
+    
 }
 
 #Preview {
     NavigationView {
         AddView()
     }
+    .environmentObject(ListViewModel())
 }
