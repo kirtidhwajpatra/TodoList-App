@@ -38,12 +38,20 @@ struct ListView: View {
         
         
         .navigationTitle("Todo List 📝")
-        .navigationBarItems(
-            trailing: EditButton(),
-//            trailing: NavigationLink("Add", destination: {
-//                AddView()
-//            })
-        )
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                if !listViewModel.items.isEmpty {
+                    EditButton()
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                if !listViewModel.items.isEmpty {
+                    NavigationLink("Add") {
+                        AddView()
+                    }
+                }
+            }
+        }
     }
 
 }
